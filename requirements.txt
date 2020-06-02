@@ -1,0 +1,4 @@
+python-slugify
+bs4
+selenium
+logging
