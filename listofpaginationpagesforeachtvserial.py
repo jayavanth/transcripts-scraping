@@ -32,9 +32,12 @@ def step2listofpagesforeachserial():
 
     #USING A MOCKJSON TO CHECK FOR SINGLE CASE
     testjson = [{
-        "name": "Agents of S.H.I.E.L.D.",
-        "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=140"
+        "name": "All American",
+        "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=902"
         }]
+
+
+    
 
 
 
@@ -53,51 +56,140 @@ def step2listofpagesforeachserial():
 
         if os.path.exists(os.getcwd() + "/TVSerials/" + slugifiedname + "-pageslist" + ".json"):
                 os.remove(os.getcwd() + "/TVSerials/" + slugifiedname + "-pageslist" + ".json")
-        with open(os.getcwd() + "/TVSerials/" + slugifiedname + "-pageslist" + ".json","w") as writefile :
 
+
+        #with open(os.getcwd() + "/TVSerials/" + slugifiedname + "-pageslist" + ".json","w") as writefile :
+        with open(os.getcwd() + "/TVSerials/" + slugifiedname + ".json","w") as writefile :
             try:
                 
                 url = eachtvserial['link']
                 listofpages = []
+                loopcondition = True
+                pagenumberflag = 1
                 
-                while True :
 
-                    driver.get(url)
-                    #logging.info("Got the mainpage TVserial",slugifiedname)
+                driver.get(url)
+                #logging.info("Got the mainpage TVserial",slugifiedname)
 
+                
+                listofepisodes = driver.find_elements_by_xpath("//td[@class='topic-titles row2']/h3/a[@class='topictitle']")
+
+                page = {
+                    'link' : url
+                }
+
+                listofpages.append(page)
+
+
+                episodeswrapperlist = []
+
+                logging.info("now getting episode list of links on root page")
+
+                for elem in listofepisodes: 
                     
+                    #filetowrite.write(elem.text)
+                    #filetowrite.write(elem.get_attribute('href'))
+                    #print (elem.text)
+                    #print( elem.get_attribute('href'))
+                    episodename = elem.text
+                    linkwithsessionid = elem.get_attribute('href')
+                    splittinglink = linkwithsessionid.split("&sid")
+                    link = splittinglink[0]
 
-                    page = {
-                        'link' : url
+                    rawmovie = {
+                        'name' : episodename,
+                        'link' : link
                     }
 
-                    listofpages.append(page)
+                    episodeswrapperlist.append(rawmovie)
 
+                
 
-            
+                logging.info("successfully fetched links in the root page. Now see if there are any other pages to traverse")
+                pagenumberflag = pagenumberflag + 1 
 
-                    logging.info("successfully fetched links in the first page. Now see if there are any other pages to traverse")
-                    
+                
 
+                #listofhrefelements = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
+                #nextpage = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
+                nextpage = driver.find_elements_by_xpath("//div[@class='box extra-content control-box top']//b[@class='pagination']//descendant::a[position()=last()]")
+                #nextpage = driver.find_elements_by_xpath("//div[@class='box extra-content control-box top']//b[@class='pagination']//descendant::a")
+                #breakpoint()
 
-                    #listofhrefelements = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
-                    nextpage = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a[last()]")
-                    
-                    breakpoint()
+                while True : 
+                    sleep(random.randrange(7,16))
 
-                    if(not (nextpage == [])) :
-                        #url = nextpage.get_attribute('href')
+                    # if(int(nextpage[0].text,base = 10) < pagenumberflag):
 
-                        for elem in nextpage :
-                            url = elem.href
-                        sleep(random.randrange(3,7))
+                    #     break
 
+                    if( nextpage[0].text != "»") :
+                        break
 
-                    else :
+                    if(not(nextpage == [])):
+
+                        nextpage[0].click()
+
+                    else : 
                         break 
 
-                logging.info("dumping as json only once") 
-                writefile.write(json.dumps(listofpages))            
+                    
+
+                    logging.info("Now getting and storing all the links in traversed page")
+                    #TODO : Clean the data in listofepisodes below
+                    listofepisodes = driver.find_elements_by_xpath("//td[@class='topic-titles row2']/h3/a[@class='topictitle']")
+
+                    for elem in listofepisodes: 
+                    
+                    #filetowrite.write(elem.text)
+                    #filetowrite.write(elem.get_attribute('href'))
+                    #print (elem.text)
+                    #print( elem.get_attribute('href'))
+                        episodename = elem.text
+                        linkwithsessionid = elem.get_attribute('href')
+                        splittinglink = linkwithsessionid.split("&sid")
+                        link = splittinglink[0]
+
+                        rawmovie = {
+                            'name' : episodename,
+                            'link' : link
+                        }
+
+                        episodeswrapperlist.append(rawmovie)
+
+                    
+
+                    logging.info("moving to next page")
+                    nextpage = driver.find_elements_by_xpath("//div[@class='box extra-content control-box top']//b[@class='pagination']//descendant::a[position()=last()]")
+
+                    pagenumberflag = pagenumberflag + 1
+                    #breakpoint()
+                    #if(nextpage == []) :
+                    #   break 
+
+
+                # for eachpage in nextpage : 
+                #     sleep(random.randrange(7,16))
+                #     eachpage.click()
+                #     nextpage = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
+                #     breakpoint()
+
+
+
+
+                # if(not (nextpage == [])) :
+                #     #url = nextpage.get_attribute('href')
+
+                #     for elem in nextpage :
+                #         url = elem.href
+                #     sleep(random.randrange(7,16))
+
+
+                logging.info("dumping as json only once")    
+                writefile.write(json.dumps(episodeswrapperlist))
+
+                # logging.info("dumping as json only once") 
+                # writefile.write(json.dumps(listofpages))            
                                        
 
             except:
@@ -106,6 +198,8 @@ def step2listofpagesforeachserial():
 
             finally :
                 driver.quit()
+                logging.info("driver gracefully closed")
+
 
     logging.info("Got the list of all pages  successfully")
 
@@ -116,3 +210,5 @@ if __name__ == '__main__':
     logging.basicConfig(filename='listofpaginationpagesforeachtvserial.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 
     step2listofpagesforeachserial()
+
+    

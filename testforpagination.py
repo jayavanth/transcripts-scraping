@@ -51,6 +51,8 @@ def step2listofepisodesforeachtvserial():
 
         slugifiedname = slugify(eachtvserial['name'])
 
+        if((path.exists(os.getcwd() + "/TVSerials" + slugifiedname + ".json"))) : 
+            os.remove(os.getcwd() + "/TVSerials/" + slugifiedname + ".json")
 
         with open(os.getcwd() + "/TVSerials/" + slugifiedname + ".json","w") as writefile :
 
@@ -108,7 +110,10 @@ def step2listofepisodesforeachtvserial():
 
 
                 #listofhrefelements = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
-                nextpage = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a[last()]")
+                nextpage = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
+                
+                breakpoint()
+                
                 if(not(nextpage == [])) :
                     url = nextpage.get_attribute('href')
 

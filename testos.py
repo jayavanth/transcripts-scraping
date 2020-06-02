@@ -27,5 +27,12 @@ from os import path
 if(not(path.exists(os.getcwd() + "/testdirectory"))) : 
         os.mkdir(os.getcwd() + "/testdirectory")
 
+loadedlist = []
 
+emptylist = []
+
+if(loadedlist == emptylist) :
+	print("empty")
+else :
+	print("loaded")
 print(os.getcwd())
