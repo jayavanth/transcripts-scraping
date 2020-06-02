@@ -24,17 +24,17 @@ import os
 from slugify import slugify
 from os import path
 
-def step2listofpagesforeachserial():
+def listofmovies():
     options = Options()
     #options.headless = True
     options.add_argument("--window-size=1440,900")
     
     driver = webdriver.Chrome(options=options)
 
-    #USING A MOCKJSON TO CHECK FOR SINGLE CASE
-    testjson = [{
-        "name": "All American",
-        "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=902"
+    
+    moviejson = [{
+        "name": "LIST OF ALL MOVIES",
+        "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=150"
         }]
 
 
@@ -42,25 +42,25 @@ def step2listofpagesforeachserial():
 
 
 
-    #linksjson = json.loads(open("listoftvserials.json").read())
+    
 
     driver = webdriver.Chrome(options=options)
 
-    if(not(path.exists(os.getcwd() + "/TVSerials"))) : 
-        os.mkdir(os.getcwd() + "/TVSerials")
+    if(not(path.exists(os.getcwd() + "/Movies"))) : 
+        os.mkdir(os.getcwd() + "/Movies")
 
     #TODO : Change testjson to linksjson later
-    for eachtvserial in testjson :
+    for eachtvserial in moviejson :
 
 
         slugifiedname = slugify(eachtvserial['name'])
 
-        if os.path.exists(os.getcwd() + "/TVSerials/" + slugifiedname + ".json"):
-                os.remove(os.getcwd() + "/TVSerials/" + slugifiedname + ".json")
+        if os.path.exists(os.getcwd() + "/Movies/" + slugifiedname + ".json"):
+                os.remove(os.getcwd() + "/Movies/" + slugifiedname + ".json")
 
 
-        #with open(os.getcwd() + "/TVSerials/" + slugifiedname + "-pageslist" + ".json","w") as writefile :
-        with open(os.getcwd() + "/TVSerials/" + slugifiedname + ".json","w") as writefile :
+        
+        with open(os.getcwd() + "/Movies/" + slugifiedname + ".json","w") as writefile :
             try:
                 
                 url = eachtvserial['link']
@@ -88,10 +88,7 @@ def step2listofpagesforeachserial():
 
                 for elem in listofepisodes: 
                     
-                    #filetowrite.write(elem.text)
-                    #filetowrite.write(elem.get_attribute('href'))
-                    #print (elem.text)
-                    #print( elem.get_attribute('href'))
+                    
                     episodename = elem.text
                     linkwithsessionid = elem.get_attribute('href')
                     splittinglink = linkwithsessionid.split("&sid")
@@ -111,18 +108,14 @@ def step2listofpagesforeachserial():
 
                 
 
-                #listofhrefelements = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
-                #nextpage = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
+                
                 nextpage = driver.find_elements_by_xpath("//div[@class='box extra-content control-box top']//b[@class='pagination']//descendant::a[position()=last()]")
-                #nextpage = driver.find_elements_by_xpath("//div[@class='box extra-content control-box top']//b[@class='pagination']//descendant::a")
-                #breakpoint()
+                
 
                 while True : 
                     sleep(random.randrange(7,16))
-
-                    # if(int(nextpage[0].text,base = 10) < pagenumberflag):
-
-                    #     break
+                    #TODO : increase the random number range
+                  
 
                     if( nextpage[0].text != "»") :
                         break
@@ -142,10 +135,7 @@ def step2listofpagesforeachserial():
 
                     for elem in listofepisodes: 
                     
-                    #filetowrite.write(elem.text)
-                    #filetowrite.write(elem.get_attribute('href'))
-                    #print (elem.text)
-                    #print( elem.get_attribute('href'))
+                  
                         episodename = elem.text
                         linkwithsessionid = elem.get_attribute('href')
                         splittinglink = linkwithsessionid.split("&sid")
@@ -163,39 +153,20 @@ def step2listofpagesforeachserial():
                     logging.info("moving to next page")
                     nextpage = driver.find_elements_by_xpath("//div[@class='box extra-content control-box top']//b[@class='pagination']//descendant::a[position()=last()]")
 
-                    pagenumberflag = pagenumberflag + 1
-                    #breakpoint()
-                    #if(nextpage == []) :
-                    #   break 
+                    
+                    
 
-
-                # for eachpage in nextpage : 
-                #     sleep(random.randrange(7,16))
-                #     eachpage.click()
-                #     nextpage = driver.find_elements_by_xpath("/html/body[@class='viewforum f140']/div[@id='wrapper']/div[@id='wrapcentre']/div[@class='box extra-content control-box top']/div[@class='boxbody clearfix']/div[@class='pull-left nowrap']/b[@class='pagination']//descendant::a")
-                #     breakpoint()
-
-
-
-
-                # if(not (nextpage == [])) :
-                #     #url = nextpage.get_attribute('href')
-
-                #     for elem in nextpage :
-                #         url = elem.href
-                #     sleep(random.randrange(7,16))
+              
 
 
                 logging.info("dumping as json only once")    
                 writefile.write(json.dumps(episodeswrapperlist))
 
-                # logging.info("dumping as json only once") 
-                # writefile.write(json.dumps(listofpages))            
-                                       
+             
 
             except:
 
-                logging.error("Error in traversal of each page of tvseriallink")
+                logging.error("Error in traversal of each page of movielink")
 
             finally :
                 driver.quit()
@@ -208,9 +179,9 @@ def step2listofpagesforeachserial():
 
 if __name__ == '__main__':
     #START OF PROGRAM HERE
-    logging.basicConfig(filename='listofepisodesforeachtvserial.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='listofmovies.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 
-    step2listofpagesforeachserial()
+    listofmovies()
 
     
 

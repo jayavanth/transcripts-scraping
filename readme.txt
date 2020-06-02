@@ -25,7 +25,18 @@ Prototype : saveeachepisodetotextfile.py
 Output: episodecompletetext.txt
 
 
+
 Code : Work in Progress(WIP)
+
+STEP 4 : Get the  list of movies seperately
+
+Code: listofmovies.py
+Output : listofmovies.json
+
+STEP 5 : For each move in Step 4 , get the movie transcript
+
+Code: 
+Output : in the Movies folder
 
 ***
 
