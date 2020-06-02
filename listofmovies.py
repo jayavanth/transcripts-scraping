@@ -1,6 +1,4 @@
 
-
-
 from time import sleep
 from bs4 import BeautifulSoup
 
@@ -182,9 +180,3 @@ if __name__ == '__main__':
     logging.basicConfig(filename='listofmovies.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 
     listofmovies()
-
-    
-
-
-
-

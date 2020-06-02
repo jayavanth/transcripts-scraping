@@ -24,29 +24,19 @@ import os
 from slugify import slugify
 from os import path
 
-def step2listofpagesforeachserial():
+def listoftranscriptsforeachmovie():
     
 
-    #USING A MOCKJSON TO CHECK FOR SINGLE CASE
-    testjson = [{
-        "name": "The Village",
-       "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=888"
-        }]
-
-    testjson2 = [{
-        "name": "The Blacklist",
-       "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=194"
-        }]
-
+    
   
-    linksjson = json.loads(open("listoftvserials.json").read())
-    errorjson = json.loads(open("listoftvserials-error.json").read())
+    linksjson = json.loads(open("list-of-all-movies.json").read())
     
-    if(not(path.exists(os.getcwd() + "/TVSerials"))) : 
-        os.mkdir(os.getcwd() + "/TVSerials")
+    
+    if(not(path.exists(os.getcwd() + "/Movies"))) : 
+        os.mkdir(os.getcwd() + "/Movies")
 
     #TODO : Change testjson to linksjson later
-    for eachtvserial in errorjson :
+    for eachtvserial in linksjson :
 
         
         options = Options()
@@ -56,10 +46,10 @@ def step2listofpagesforeachserial():
         driver = webdriver.Chrome(options=options)
         slugifiedname = slugify(eachtvserial['name'])
 
-        if os.path.exists(os.getcwd() + "/TVSerials/" + slugifiedname + ".json"):
-                os.remove(os.getcwd() + "/TVSerials/" + slugifiedname + ".json")
+        if os.path.exists(os.getcwd() + "/Movies/" + slugifiedname + ".json"):
+                os.remove(os.getcwd() + "/Movies/" + slugifiedname + ".json")
 
-        infomessagefetchlinksnewserial = "FETCHING ALL THE LINKS FOR A NEW TVSERIAL *** " + slugifiedname
+        infomessagefetchlinksnewserial = "FETCHING ALL THE LINKS FOR A NEW MOIVE *** " + slugifiedname
         logging.info(infomessagefetchlinksnewserial)
 
         #with open(os.getcwd() + "/TVSerials/" + slugifiedname + "-pageslist" + ".json","w") as writefile :
@@ -233,12 +223,6 @@ def step2listofpagesforeachserial():
 
 if __name__ == '__main__':
     #START OF PROGRAM HERE
-    logging.basicConfig(filename='listofepisodesforeachtvserial.log', filemode='w', level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='listoftranscriptsforeachmovie.log', filemode='w', level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    step2listofpagesforeachserial()
-
-    
-
-
-
-
+    listoftranscriptsforeachmovie()

@@ -45,15 +45,24 @@ logging.basicConfig(filename='testos.log', filemode='w', level=logging.DEBUG, fo
 listoftvserialsjson = json.loads(open("listoftvserials.json").read())
 
 for each in listoftvserialsjson :
-	print(str(each['name']))
-	#print(str(each['link']))
+	
+	# if(str(each['name']) == "The Blacklist") :
 
+	# 	print(str(each['name']))
+	# 	print(str(each['link']))
+
+
+
+	
 	slugifiedname = slugify(each['name'])
 
-	print(slugifiedname)
+	countfilename =  os.getcwd() + "/TVSerials/" + slugifiedname + ".json"
+	if((os.system(wc -w countfilename) < 1) :
+		print ( slugifiedname)
+	#print(slugifiedname)
 
-	print("******************")
+	#print("******************")
 
-	infomessage = "NOW PRINTING SLUGIFIED NAME -" + slugifiedname
+	#infomessage = "NOW PRINTING SLUGIFIED NAME -" + slugifiedname
 	#logging.info("NOW PRINTING SLUGIFIED NAME -", slugifiedname)
-	logging.info(infomessage)
+	#logging.info(infomessage)

@@ -21,17 +21,11 @@ import json
 import random
 
 
-if __name__ == '__main__':
-    #START OF PROGRAM HERE
-    logging.basicConfig(filename='saveeachepisodetotextfile.log', filemode='w', level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 
-    options = Options()
-    #options.headless = True
-    options.add_argument("--window-size=1440,900")
+    
 
-    driver = webdriver.Chrome(options=options)
+def gettranscripts() :
 
-   
     url = 'https://transcripts.foreverdreaming.org/viewtopic.php?f=174&t=24903'
     #EACH EPISODE XPATH - div[@class='postbody']//descendant::p
 
@@ -42,12 +36,14 @@ if __name__ == '__main__':
      'listofepisodes' : 'link'
     ]
 
-    fetchserialnamejson = [{
-                            "name": "All American", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=902"}, {
-                            "name": "A Million Little Things", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=853"}, {
-                            "name": "American Horror Story", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=135"}, {
-                            "name": "Arrow", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=172"}, {
-                            "name": "Avatar: The Last Airbender", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=935"}]
+    listoftvserialnamesjson = json.loads(open("listoftvserials.json").read())
+
+    # fetchepisodelinksjson = [{
+    #                         "name": "All American", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=902"}, {
+    #                         "name": "A Million Little Things", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=853"}, {
+    #                         "name": "American Horror Story", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=135"}, {
+    #                         "name": "Arrow", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=172"}, {
+    #                         "name": "Avatar: The Last Airbender", "link": "https://transcripts.foreverdreaming.org/viewforum.php?f=935"}]
 
     #linksjson = json.loads(open("listoftvserials.json").read())
 
@@ -59,7 +55,7 @@ if __name__ == '__main__':
     #CREATE DIRECTORIES FOR EACH OF THE TVSERIAL. EACH EPISODE TRANSCRIPTS WILL BE STORED IN THE TVSERIAL NAME DIRECTORY FOR EACH TVSERIAL
     for each in fetchserialnamejson :
 
-        slugifiedname = slugify(fetchserialnamejson['name'])
+        slugifiedtvserialname = slugify(fetchserialnamejson['name'])
 
         if(not(path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname))) : 
         os.mkdir(os.getcwd() + "/TVSerials/" + slugifiedtvserialname)
@@ -73,12 +69,14 @@ if __name__ == '__main__':
         #CHECK IF THE FILE THAT CONTAINS THE LIST OF THE LINKS FOR THE TVSERIAL EXISTS
         if os.path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname + ".json"):
             
-            
+            #Load that file
             episodelinksjson = json.loads((open("os.getcwd()" + "/TVSerials/" + slugifiedtvserialname + ".json")).read())
-            logging.info("list of episodes successfully loaded for",slugifiedtvserialname)
+            infomessage1 = "List of web links of all episodes successfully loaded for *** "  + slugifiedtvserialname
+            logging.info(infomessage1)
 
         else :
-            logging.error("ERROR in getting list of episodes for",slugifiedtvserialname)
+            message2 = "ERROR in getting list of weblinks of episodes for *** " + slugifiedtvserialname
+            logging.error(message2)
 
 
 
@@ -88,27 +86,37 @@ if __name__ == '__main__':
                                 "name": "01x06 - Kappa Spirit","link": "https://transcripts.foreverdreaming.org/viewtopic.php?f=904&t=34920"}, {
                                 "name": "01x07 - Out of Scythe", "link": "https://transcripts.foreverdreaming.org/viewtopic.php?f=904&t=34921"}]
 
+        options = Options()
+        #options.headless = True
+        options.add_argument("--window-size=1440,900")
+
+        driver = webdriver.Chrome(options=options)
+
         #TODO : Random sleep funciton here
         sleep(random.randrange(27,44))
 
-        logging.info("STARTING SCRAPING of",slugifiedtvserialname,"now")
+        message9 = "STARTING SCRAPING now of *** " + slugifiedtvserialname
+
+        logging.info(message9)
 
         if((path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname))) : 
 
-            logging.info()
+            message3 = "STARTED fetching the transcripts of *** " + slugifiedtvserialname
+            logging.info(message3)
 
             for eachepisode in mockepisodelinksjson:
 
                 #TODO : Random sleep function here
-                sleep(random.randrange(13,26))
+                sleep(random.randrange(9,17))
 
                 slugifiedepisodename = slugify(eachepisode['episodename'])
 
-                logging.info("scraping of", str(slugifiedepisodename),"of", str(slugifiedtvserialname),"started")
+                message4 = "Scraping of" + slugifiedepisodename + "of" + slugifiedtvserialname + "started"
+                logging.info(message4)
 
 
 
-                with open(os.getcwd() + "/TVSerials/" + slugifiedtvserialname + "/" + slugifiedepisodename+ ".txt","w") as writefile :
+                with open(os.getcwd() + "/TVSerials/" + slugifiedtvserialname + "/" + slugifiedepisodename + ".txt","w") as writefile :
 
                     try :
                         driver.get(eachepisode['episodelink'])
@@ -116,7 +124,7 @@ if __name__ == '__main__':
                         listofpara = driver.find_elements_by_xpath("//div[@class='postbody']//descendant::p")
                         
                         
-                        logging.info("list of para fetched")
+                        #logging.info("list of para fetched")
                         
                         for eachelem in listofpara :
                             
@@ -125,16 +133,36 @@ if __name__ == '__main__':
 
        
                     except :
-                        logging.error("error while getting text of an episode")
-
-                logging.info(str(slugifiedepisodename),"of", str(slugifiedtvserialname),"successfully scrapped")
-
+                        message5 = slugifiedepisodename + "*** error while getting text of this episode of ***" + slugifiedtvserialname
+                        logging.error(message5)
 
 
-        logging.info("All the episodes of", slugifiedtvserialname,"SCRAPED")     
+                                         
+
+                
+                message6 = slugifiedepisodename + " successfully scraped of *** " + slugifiedtvserialname 
+                logging.info(message6)
+
+
+            message10 = ""
+            driver.quit()
+            message7 = slugifiedepisodename + "*** Driver gracefully shut down of *** " + slugifiedtvserialname
+            logging.info(message7)
+
+
+        message8 = "Succesfully scraped all the episodes of *** " + slugifiedtvserialname
+        logging.info(message8)
+
+    message11 = "Program now shutting down"
+    logging.info(message11)     
 
 
 
+
+if __name__ == '__main__':
+    #START OF PROGRAM HERE
+    logging.basicConfig(filename='module-eachepisodetotextfile.log', filemode='w', level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    gettranscripts()
 
     
 
@@ -142,5 +170,4 @@ if __name__ == '__main__':
     
 
 
-    for episode in tvserialseries.json:
 

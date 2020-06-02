@@ -24,6 +24,8 @@ STEP 3 : Fore each episode in STEP 2, fetch the transcript
 Prototype : saveeachepisodetotextfile.py
 Output: episodecompletetext.txt
 
+Code : module-eachepisodetottextfile.py
+
 
 
 Code : Work in Progress(WIP)
@@ -35,7 +37,8 @@ Output : list-of-all-movies.json in the Movies folder
 
 STEP 5 : For each move in Step 4 , get the movie transcript
 
-Code: 
+
+Code: listoftranscriptsforeachmovie.py | WORK IN PROGRESS 
 Output : in the Movies folder
 
 ***
