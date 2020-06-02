@@ -31,7 +31,7 @@ Code : Work in Progress(WIP)
 STEP 4 : Get the  list of movies seperately
 
 Code: listofmovies.py
-Output : listofmovies.json
+Output : list-of-all-movies.json in the Movies folder
 
 STEP 5 : For each move in Step 4 , get the movie transcript
 
@@ -40,4 +40,7 @@ Output : in the Movies folder
 
 ***
 
+POST SCRAPING :
+
+	Clean the data. ( Online store, COVID, Transcript Index links in each file)
 
