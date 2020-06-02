@@ -19,6 +19,14 @@ STEP 2 : Get list of episodes for each tv serial from STEP 1
 Code : listofepisodesforeachtvserial.py
 Output: listofepisodesforeachtvserial.json
 
+STEP 3 : Fore each episode in STEP 2, fetch the transcript
+
+Prototype : saveeachepisodetotextfile.py
+Output: episodecompletetext.txt
+
+
+Code : Work in Progress(WIP)
+
 ***
-WORK IN PROGRESS
+
 
