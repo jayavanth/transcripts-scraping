@@ -19,6 +19,8 @@ import logging
 import sys
 import json
 import random
+from slugify import slugify
+import os
 
 
 
@@ -31,10 +33,8 @@ def gettranscripts() :
 
 
     #MOCKSERIALNAME 
-    fetchserialnamejson = [
-     'name' : 'Game of Thrones',
-     'listofepisodes' : 'link'
-    ]
+    fetchserialnamejson = {'name':'Game of Thrones',
+     'listofepisodes' : 'link'}
 
     listoftvserialnamesjson = json.loads(open("listoftvserials.json").read())
 
@@ -57,8 +57,8 @@ def gettranscripts() :
 
         slugifiedtvserialname = slugify(fetchserialnamejson['name'])
 
-        if(not(path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname))) : 
-        os.mkdir(os.getcwd() + "/TVSerials/" + slugifiedtvserialname)
+        if(not(os.path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname))) : 
+            os.mkdir(os.getcwd() + "/TVSerials/" + slugifiedtvserialname)
 
     
     for each in fetchserialnamejson :
@@ -70,7 +70,7 @@ def gettranscripts() :
         if os.path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname + ".json"):
             
             #Load that file
-            episodelinksjson = json.loads((open("os.getcwd()" + "/TVSerials/" + slugifiedtvserialname + ".json")).read())
+            episodelinksjson = json.loads((open(os.getcwd() + "/TVSerials/" + slugifiedtvserialname + ".json")).read())
             infomessage1 = "List of web links of all episodes successfully loaded for *** "  + slugifiedtvserialname
             logging.info(infomessage1)
 
@@ -90,7 +90,7 @@ def gettranscripts() :
         #options.headless = True
         options.add_argument("--window-size=1440,900")
 
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome()
 
         #TODO : Random sleep funciton here
         sleep(random.randrange(27,44))
@@ -99,7 +99,7 @@ def gettranscripts() :
 
         logging.info(message9)
 
-        if((path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname))) : 
+        if((os.path.exists(os.getcwd() + "/TVSerials/" + slugifiedtvserialname))) : 
 
             message3 = "STARTED fetching the transcripts of *** " + slugifiedtvserialname
             logging.info(message3)
@@ -109,7 +109,7 @@ def gettranscripts() :
                 #TODO : Random sleep function here
                 sleep(random.randrange(9,17))
 
-                slugifiedepisodename = slugify(eachepisode['episodename'])
+                slugifiedepisodename = slugify(eachepisode['name'])
 
                 message4 = "Scraping of" + slugifiedepisodename + "of" + slugifiedtvserialname + "started"
                 logging.info(message4)
@@ -118,14 +118,18 @@ def gettranscripts() :
 
                 with open(os.getcwd() + "/TVSerials/" + slugifiedtvserialname + "/" + slugifiedepisodename + ".txt","w") as writefile :
 
+                    # import ipdb ; ipdb.set_trace()
                     try :
-                        driver.get(eachepisode['episodelink'])
+                        driver.get(eachepisode['link'])
 
+                        ep_date = driver.find_elements_by_xpath("//time")
+                        ep_date = ep_date[0].get_attribute('datetime')
                         listofpara = driver.find_elements_by_xpath("//div[@class='postbody']//descendant::p")
                         
                         
                         #logging.info("list of para fetched")
-                        
+                        writefile.write(ep_date)
+                        writefile.write("\n")
                         for eachelem in listofpara :
                             
                             writefile.write(eachelem.text)                
