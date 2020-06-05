@@ -81,10 +81,9 @@ def gettranscripts() :
 
 
         #MOCK EPISODE LIST
-        mockepisodelinksjson =  [{
-                                "name": "01x05 - Other Women", "link": "https://transcripts.foreverdreaming.org/viewtopic.php?f=904&t=34919"},{
-                                "name": "01x06 - Kappa Spirit","link": "https://transcripts.foreverdreaming.org/viewtopic.php?f=904&t=34920"}, {
-                                "name": "01x07 - Out of Scythe", "link": "https://transcripts.foreverdreaming.org/viewtopic.php?f=904&t=34921"}]
+        mockepisodelinksjson = {} 
+        with open(sys.argv[1]) as json_file:
+            mockepisodelinksjson = json.load(json_file)
 
         options = Options()
         #options.headless = True
@@ -132,7 +131,8 @@ def gettranscripts() :
                         writefile.write("\n")
                         for eachelem in listofpara :
                             
-                            writefile.write(eachelem.text)                
+                            writefile.write(eachelem.text)
+                            writefile.write("\n")
 
 
        
